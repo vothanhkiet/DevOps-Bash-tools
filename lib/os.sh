@@ -29,3 +29,29 @@ is_mac(){
     fi
     return 1
 }
+
+is_windows(){
+    case "$(uname -s)" in
+        CYGWIN*|MINGW*|MSYS*)   return 0
+                                ;;
+    esac
+    return 1
+}
+
+linux_only(){
+    if ! is_linux; then
+        die "Only Linux is supported"
+    fi
+}
+
+mac_only(){
+    if ! is_mac; then
+        die "Only macOS is supported"
+    fi
+}
+
+windows_only(){
+    if ! is_windows; then
+        die "Only Windows is supported"
+    fi
+}

@@ -58,6 +58,14 @@ resolve_symlinks(){
     done
 }
 
+# Using this trick to be able to call this script from an IntelliJ hotkey which doesn't allocate /dev/tty
+# which prevents using my simpler trick of reading from /dev/tty to avoid the while loops from eating /dev/stdin
+#
+# duplicate original /dev/stdin file description 0 into file descriptor 3
+# before using while read line loops (for safe filename processing)
+# because those looks consume the /dev/stdin
+exec 3<&0
+
 git_diff_commit(){
     local basedir
     for filename in "${@:-.}"; do
@@ -70,41 +78,56 @@ git_diff_commit(){
         git_status_porcelain="$(git status --porcelain -s "${filename##*/}")"
         added_files="$(
             grep -e '^?' -e '^A' <<< "$git_status_porcelain" |
-            sed 's/^...//' || :
+            sed 's/^...//; s/^"//; s/"$//' || :
+            # stripping leading and trailing quotes because git adds them when the filename contains spaces,
+            # but we do line handling on the filename so don't need this and it breaks later processing
+            # as the quotes become taken literally
         )"
-        for added_filename in $added_files; do
+        while read -r added_filename; do
+            is_blank "$added_filename" && continue
             basename="${added_filename##*/}"
             git add "$basename"
             diff="$(git diff --color=always -- "$added_filename"
                     git diff --cached --color=always -- "$added_filename")"
-            echo "$diff" | more -FR
+            echo "$diff" | less -FR
             echo
+            # read doesn't print when using a redirect so have to print ourself
+            printf "Hit enter to commit added file '%s' or Control-C to cancel: " "$added_filename"
+            #read -r -p "Hit enter to commit added file '$added_filename' or Control-C to cancel" _ <&3  # read from dup’d stdin, not eaten by the loop
             # discard the save variable, call it _ to signify this
-            read -r -p "Hit enter to commit added file '$added_filename' or Control-C to cancel" _
+            read -r _ <&3  # read from dup’d stdin, not eaten by the loop
             echo
             echo "committing added file $added_filename"
             git commit -m "added $basename" -- "$added_filename"
-        done
+        done <<< "$added_files"
         changed_files="$(
             grep -e '^M' -e '^.M' <<< "$git_status_porcelain" |
-            sed 's/^...//' || :
+            sed 's/^...//; s/^"//; s/"$//' || :
+            # stripping leading and trailing quotes because git adds them when the filename contains spaces,
+            # but we do line handling on the filename so don't need this and it breaks later processing
+            # as the quotes become taken literally
         )"
-        for changed_filename in $changed_files; do
+        while read -r changed_filename; do
+            is_blank "$changed_filename" && continue
             basename="${changed_filename##*/}"
             diff="$(git diff --color=always -- "$changed_filename"
                     git diff --cached --color=always -- "$changed_filename")"
             if [ -z "$diff" ]; then
                 continue
             fi
-            echo "$diff" | more -FR
+            echo "$diff" | less -FR
             echo
+            # read doesn't print when using a redirect so have to print ourself
+            printf "Hit enter to commit updated file '%s' or Control-C to cancel: " "$changed_filename"
+            # read doesn't print when using a redirect
+            #read -r -p "Hit enter to commit updated file '$changed_filename' or Control-C to cancel" _ <&3  # read from dup’d stdin, not eaten by the loop
             # discard the save variable, call it _ to signify this
-            read -r -p "Hit enter to commit updated file '$changed_filename' or Control-C to cancel" _
+            read -r _ <&3  # read from dup’d stdin, not eaten by the loop
             echo
             git add -- "$changed_filename"
             echo "committing updated file $changed_filename"
             git commit -m "updated $basename" -- "$changed_filename"
-        done
+        done <<< "$changed_files"
         popd >&/dev/null || :
     done
 }

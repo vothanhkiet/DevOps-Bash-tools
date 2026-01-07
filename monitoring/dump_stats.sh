@@ -37,6 +37,9 @@ Export LSOF=true to dump the lsof output which is otherwise skipped by default b
 
 
 If NO_REMOVE_STATS_DIR environment variable is set to any value then does not remove the intermediate stats-bundle.YYYY-MM-DD-HHSS directory
+
+
+usage: ${0##*/}
 "
 
 if [ $# -gt 0 ]; then
@@ -124,7 +127,7 @@ dump_mac(){
     dump ps_auxf ps aux
     dump top top -l 1
     dump top_mpstat top -l 1 -stats pid,command,cpu,th,pstate,time,cpu -ncols 16
-    dump vmstat
+    #dump vmstat  # not available on my macOS 14
 }
 
 # ============================================================================ #

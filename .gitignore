@@ -121,7 +121,7 @@
 .Codefresh/agent/
 .compiz
 .conda/
-.config
+#.config
 # contains repo_token / COVERALLS_REPO_TOKEN
 .coveralls.yml
 .cpan/build/
@@ -257,7 +257,7 @@
 .rstudio-desktop/
 .rbenv/
 # 'rbenv local' $PWD version file
-.ruby-version
+#.ruby-version
 .sbt/[[:digit:]].[[:digit:]]*/
 .sbt/boot/
 .sbt/preloaded/
@@ -469,6 +469,44 @@ wordlists/users.weighted
 *.rtf
 *.wpd
 *.wps
+
+# ============================================================================ #
+#                           M o b i l e   B u i l d s
+# ============================================================================ #
+
+# SwiftPackageManager
+Packages
+
+# Obj-C/Swift specific
+*.hmap
+
+# App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+.build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/screenshots/**/*.jp*g
+fastlane/test_output
+fastlane/.env.default
+
+iOSInjectionProject/
+
+# ixGuard
+ixguard-license.txt
+mapping.yml
+protectionreport.html
+statistics.yml
+telemetry_dump.json
 
 # ============================================================================ #
 #
@@ -3264,7 +3302,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
-fastlane/readme.md
+#fastlane/readme.md
 
 # Version control
 vcs.xml
@@ -3403,7 +3441,7 @@ DerivedData/
 # General
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 
@@ -3518,7 +3556,7 @@ project/plugins/project/
 
 # http://www.sonarlint.org/commandline/
 # SonarLint working directories, configuration files (including credentials)
-.sonarlint/
+#.sonarlint/
 
 ### Spark ###
 *#*#

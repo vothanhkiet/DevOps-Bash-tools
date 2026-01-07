@@ -5,18 +5,23 @@
 
 # run: CASK=1 ../packages/brew_install_packages.sh brew-packages-desktop-casks.txt
 
+alfred
 anaconda
 atom
 barrier
+blackhole-2ch  # to create multi-output sound device to shazam songs from shows while using headphones
 ccmenu
 codeship/taps/jet
 docker
+flux-app
 #insomnia  # Kong Rest API testing client desktop app
 #iterm2
 #firefox-developer-edition
 google-chrome
 google-cloud-sdk
-intellij-idea-ce
+#google-earth-pro
+hammerspoon  # system event handler
+#intellij-idea-ce  # in main packages now
 keepassxc
 keka
 minikube
@@ -25,7 +30,11 @@ multipass  # instant Ubuntu VMs
 podman
 postman
 powershell
+protonvpn
+raycast
 spotify
+transmission
+tor-browser
 vagrant
 virtualbox
 vnc-viewer
